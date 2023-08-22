@@ -1,9 +1,45 @@
 # DependencyInjection in .NET
 
-In the following code Snippet, you can see that CustomerService class is heavily depends on CustomerDataAccess class to interact with database
+Take a look at the following code snippet, it shows an implementation of CustomerService making use of the CustomerDataAccess class features.
+There is nothing wrong in this kind of implementation, but you can see that CustomerService class is heavily depends on CustomerDataAccess class for data access
 
-The dependecy can be clearly visible in the code line no. 21 where we are creating a new instance of CustomerDataAccess class inorder to call GetCustomer Method
+```
+public class CustomerService
+{
+	private CustomerDataAccess custDA;
+	
+	public CustomerService(connectionString)
+	{
+		custDA = new CustomerDataAccess(connectionString);
+	}
+	
+	public IEnumerable<Customer> GetCustomers()
+	{
+		return custDA.GetCustomers()
+	}
+}
 
-![image](https://github.com/abduzalam/DependencyInjectionDemo/assets/32676744/4b7434d1-5df7-4a98-aa0d-a19bd809069b)
+public class CustomerDataAccess
+{
+	public CustomerDataAccess(string connectionString)
+	{
+		// ToDo
+	}
+}
+
+```
+
+So the CustomerService is tightly coupled with CustomerDataAccess. In these type of implementation, there are many issues, some of them are listed below
+
+1. If you have different teams work on HigherLevel Objects ( in this case its CustomerService) and some other team works on Lower level modules ( CustomerDataAccess in this scenario) , because of the tight coupling
+   it is very difficult to work in parallel
+2. If you change the name of the class CustomerDataAccess , then then you have to go and change the CustomerService class as well and recompile the higherlevel module code , so the `maintainability` is not good
+3. Say the CustomerDataAccess class going with a file system based dataaccess , and later you want to create a CustomerDataAccess class to query database , say `CustomerDataAccessSQL`, then we have to change the code in      the  CustomerService class to make use of the CustomerDataAccessSQL, so the `Extensibilty` is also not good
+
+`Dependency Inversion ` Pricioe says, higher level modules does not depend on lower level modules, both should be depend on abstraction.
+`Abstraction` means the functionality of both classes ( in this case GetCustomers() is one of the functionality) 
+
+in C#. we can abstract the functionality by using `Inteface`
+
 
 
