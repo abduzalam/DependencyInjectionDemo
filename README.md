@@ -41,5 +41,47 @@ So the CustomerService is tightly coupled with CustomerDataAccess. In these type
 
 in C#. we can abstract the functionality by using `Inteface`
 
+See the modified version of above code snippet using DI
+In this example we are using Parametized Constructor to Inject the dependency, we can also use Property to inject the dependency
+```
 
+// From Outside we instantiate CustomerDataAccess
+ICustomerDataAccess _custDA = new CustomerDataAccess(connectionString);
 
+CustomerService custService = new CustomerService(_custDA);// We call the CustomerService
+
+public class CustomerService
+{
+	private ICustomerDataAccess custDA;
+	
+	public CustomerService(ICustomerDataAccess custDA ) // And this is the Dependency Injection
+	{
+		_custDA = custDA; // This is the inversion of control
+	}
+	
+	public IEnumerable<Customer> GetCustomers()
+	{
+		return custDA.GetCustomers()
+	}
+}
+
+// This is the abstration , this means I have a way to get customers
+public interface ICustomerDataAccess
+{
+	IEnumerable<Customer> GetCustomers();
+}
+
+public class CustomerDataAccess : ICustomerDataAccess
+{
+	public CustomerDataAccess(string connectionString)
+	{
+		// ToDo
+	}
+	
+	public IEnumerable<Customer> GetCustomers()
+	{
+		// TODO 
+	}
+}
+
+```
